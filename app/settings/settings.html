@@ -1,0 +1,106 @@
+<md-content layout-padding>
+    <div>
+        <form name="vm.settingsForm">
+
+            <!--<div layout="row" layout-align="space-between center">
+                <md-input-container class="md-block" flex="80">
+                    <label>Save File Location</label>
+                    <input ng-model="vm.settings.saveFileLocation" disabled>
+                </md-input-container>
+                <md-button class="md-raised md-primary" ng-click="vm.findSave()" flex="20">Find Save</md-button>
+            </div>-->
+            <div layout="row" layout-align="space-between center">
+                <div flex="80">
+                    <md-input-container class="md-block">
+                        <label>Save File Location</label>
+                        <input ng-model="vm.data.settings.saveFileLocation" disabled>
+                    </md-input-container>
+                </div>
+                <div flex="20">
+                    <md-button class="md-raised md-primary" ng-click="vm.findSave()" layout-fill>Find Save</md-button>
+                </div>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Save Backup Location</label>
+                    <input ng-model="vm.data.settings.saveDirectory">
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Default Backup File Format</label>
+                    <input ng-model="vm.data.settings.backupFileFormat">
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Default Backup Name Format</label>
+                    <input ng-model="vm.data.settings.backupNameFormat">
+                </md-input-container>
+            </div>
+            <div>
+                <md-checkbox ng-model="vm.data.settings.autosave" aria-label="Auto-Save Enabled Checkbox"></md-checkbox>
+                Auto-Save {{ vm.core.data.settings.autosave ? ("(" + vm.core.data.autosaveTimeRemaining + ")") : null }}
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Auto-Save Interval (Minutes)</label>
+                    <input type="text" name="autosaveInterval" ng-model="vm.data.settings.autosaveInterval" ng-pattern="/^\d*\.?\d+$/" />
+                    <div ng-messages="vm.settingsForm.autosaveInterval.$error">
+                        <div ng-message="pattern">
+                            Must be a valid number
+                        </div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div>
+                <div>
+                    Create Backup Shortcut (Game must be in windowed mode)
+                </div>
+                <div layout="row">
+                    <md-select ng-model="vm.data.settings.hotkeys.backup.modifier1" flex="33" aria-label="backup modifier 1">
+                        <md-option value="CommandOrControl"><em>Ctrl</em></md-option>
+                        <md-option value="Alt"><em>Alt</em></md-option>
+                        <md-option value="Shift"><em>Shift</em></md-option>
+                    </md-select>
+                    <md-select ng-model="vm.data.settings.hotkeys.backup.modifier2" flex="33" aria-label="backup modifier 2">
+                        <md-option><em>None</em></md-option>
+                        <md-option value="CommandOrControl"><em>Ctrl</em></md-option>
+                        <md-option value="Alt"><em>Alt</em></md-option>
+                        <md-option value="Shift"><em>Shift</em></md-option>
+                    </md-select>
+                    <md-select ng-model="vm.data.settings.hotkeys.backup.modifier3" flex="33" aria-label="backup modifier 3">
+                        <md-option ng-repeat="char in vm.characters" ng-value="char">{{char}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    Restore Selected Save Shortcut (Game must be in windowed mode)
+                </div>
+                <div layout="row">
+                    <md-select ng-model="vm.data.settings.hotkeys.restore.modifier1" flex="33" aria-label="restore modifier 1">
+                        <md-option value="CommandOrControl"><em>Ctrl</em></md-option>
+                        <md-option value="Alt"><em>Alt</em></md-option>
+                        <md-option value="Shift"><em>Shift</em></md-option>
+                    </md-select>
+                    <md-select ng-model="vm.data.settings.hotkeys.restore.modifier2" flex="33" aria-label="restore modifier 2">
+                        <md-option><em>None</em></md-option>
+                        <md-option value="CommandOrControl"><em>Ctrl</em></md-option>
+                        <md-option value="Alt"><em>Alt</em></md-option>
+                        <md-option value="Shift"><em>Shift</em></md-option>
+                    </md-select>
+                    <md-select ng-model="vm.data.settings.hotkeys.restore.modifier3" flex="33" aria-label="restore modifier 3">
+                        <md-option ng-repeat="char in vm.characters" ng-value="char">{{char}}</md-option>
+                    </md-select>
+                </div>
+            </div>
+
+            <md-button class="md-raised" ng-click="vm.cancel()">Cancel</md-button>
+            <md-button class="md-raised md-primary" ng-click="vm.save()" ng-disabled="vm.settingsForm.$invalid">Save</md-button>
+
+        </form>
+    </div>
+</md-content>

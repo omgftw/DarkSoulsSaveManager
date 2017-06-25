@@ -1,0 +1,15 @@
+ <md-content layout-padding>
+     <div>
+      <form name="userForm">
+
+        <md-input-container class="md-block" ng-show="vm.saveFileLocation">
+          <label>Save File Location</label>
+          <input ng-model="vm.saveFileLocation" disabled>
+        </md-input-container>
+
+        <md-button class="md-raised md-primary" ng-click="vm.findSave()">Find Save</md-button>
+        <md-button class="md-raised md-primary" ng-click="vm.continue()" ng-show="vm.saveFileLocation">Continue</md-button>
+
+      </form>
+    </div>
+  </md-content>

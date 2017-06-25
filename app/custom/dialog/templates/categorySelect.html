@@ -1,0 +1,27 @@
+<md-dialog aria-label="Change category">
+    <md-dialog-content class="md-dialog-content" role="document" tabIndex="-1">
+        <h2 class="md-title">Change Category</h2>
+        <div layout="column">
+            <div>
+                Please select a new category for {{saveName}}
+            </div>
+            <md-input-container>
+            <md-select ng-model="selectedCategory" aria-label="Category select" md-autofocus>
+                <md-option ng-value="null">None</md-option>
+              	<md-option ng-repeat="category in categories" ng-value="category">
+                {{category}}
+              	</md-option>
+            </md-select>
+            </md-input-container>
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <md-button ng-click="cancel()" class="md-primary md-cancel-button">
+            Cancel
+        </md-button>
+        <md-button ng-click="confirm()" class="md-primary md-confirm-button">
+            Change Category
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

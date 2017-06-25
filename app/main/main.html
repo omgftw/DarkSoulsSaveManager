@@ -1,0 +1,113 @@
+<div layout="row" layout-align="space-between">
+  <div>
+
+    <md-menu>
+      <md-button class="md-raised" ng-click="vm.openMenu($mdOpenMenu, $event)">
+        <md-icon md-svg-src="content/menu.svg" aria-label="Menu" class="md-secondary md-hue-3"></md-icon>
+        <md-tooltip md-direction="bottom">
+          Menu
+        </md-tooltip>
+      </md-button>
+      <md-menu-content>
+        <md-menu-item>
+          <md-button ng-click="vm.importSave($event)">
+            <md-icon md-svg-src="content/call_received.svg" md-menu-align-target></md-icon>
+            Import Save
+          </md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button ng-click="vm.openSaveBackupFolder($event)">
+            <md-icon md-svg-src="content/folder.svg" md-menu-align-target></md-icon>
+            Open Save Backup Folder
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+  </div>
+  <div>
+    <md-button class="md-raised" ng-click="vm.settingsPage()">
+      <md-icon md-svg-src="content/settings.svg" aria-label="Settings" class="md-secondary md-hue-3"></md-icon>
+      <md-tooltip md-direction="bottom">
+        Settings
+      </md-tooltip>
+    </md-button>
+  </div>
+</div>
+
+<div layout="row" layout-padding>
+  <!--<md-content layout-padding>-->
+  <md-input-container flex="100">
+    <label>
+      Category
+    </label>
+    <md-select ng-model="vm.settings.selectedCategory" aria-label="Category" ng-change="vm.categorySelect()">
+      <md-option ng-value="null"><em>All</em></md-option>
+      <md-option ng-repeat="category in vm.categories" ng-value="category">{{category}}</md-option>
+    </md-select>
+  </md-input-container>
+
+  <md-input-container>
+    <md-button class="md-raised" ng-click="vm.addCategory()">
+      <md-icon md-svg-src="content/add.svg" aria-label="Add new category" class="md-secondary md-hue-3"></md-icon>
+      <md-tooltip md-direction="bottom">
+        Add New Category
+      </md-tooltip>
+    </md-button>
+  </md-input-container>
+
+  <md-input-container>
+    <md-button class="md-raised" ng-click="vm.removeCategory()">
+      <md-icon md-svg-src="content/remove.svg" aria-label="Add new category" class="md-secondary md-hue-3"></md-icon>
+      <md-tooltip md-direction="bottom">
+        Remove Category
+      </md-tooltip>
+    </md-button>
+  </md-input-container>
+  <!--</md-content>-->
+</div>
+
+<div layout="column" ng-cloak class="md-inline-form">
+  <md-content layout-padding>
+    <div>
+      <form name="saveForm">
+        <md-list>
+          <md-subheader class="md-no-sticky">Saves</md-subheader>
+          <md-list-item ng-repeat="save in vm.saves track by save.path" ng-click="vm.selectSave(save.id, $event)" class="noright" md-colors="{background: save.selected ? 'blue' : 'grey-700' }">
+            <!--<img alt="{{ save.name }}" ng-src="{{ person.img }}" class="md-avatar" />-->
+            <p>{{ save.name + (save.category && !vm.settings.selectedCategory ? (" (" + save.category + ")") : "") }}</p>
+            <!--<md-checkbox class="md-secondary" ng-model="person.selected"></md-checkbox>-->
+            <md-icon md-svg-src="content/done.svg" ng-click="vm.selectSave(save.id, $event)" aria-label="Set as Primary" class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Set as Primary
+              </md-tooltip>
+            </md-icon>
+            <md-icon md-svg-src="content/edit.svg" ng-click="vm.renameSave(save.id, save.name, $event)" aria-label="Rename Save" class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Rename Save
+              </md-tooltip>
+            </md-icon>
+            <md-icon md-svg-src="content/folder.svg" ng-click="vm.changeCategory(save.id, save.name, $event)" aria-label="Change Save Category"
+              class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Change Category
+              </md-tooltip>
+            </md-icon>
+            <md-icon md-svg-src="content/delete.svg" ng-click="vm.deleteSave(save.id, $event)" aria-label="Delete Save" class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Delete Save
+              </md-tooltip>
+            </md-icon>
+            <md-icon md-svg-src="content/file_upload.svg" ng-click="vm.restoreSave(save.id, $event)" aria-label="Restore Save" class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Restore Save
+              </md-tooltip>
+            </md-icon>
+            <!--<md-icon class="md-secondary" ng-click="doSecondaryAction($event)" aria-label="Chat" md-svg-icon="communication:message"></md-icon>-->
+          </md-list-item>
+        </md-list>
+
+      </form>
+    </div>
+    <md-button class="md-raised md-primary" ng-click="vm.createBackup()">Create Backup</md-button>
+  </md-content>
+</div>
