@@ -1,6 +1,8 @@
-A save manager for dark souls.
+A save manager for dark souls.  
 
-Can be used with any game that uses only a single save file.
+Can be used with any game that uses only a single save file.  
+
+Download: https://github.com/omgftw/DarkSoulsSaveManager/releases  
 
 To use:  
 Get node: https://nodejs.org  
