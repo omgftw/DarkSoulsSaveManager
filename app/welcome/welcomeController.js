@@ -20,6 +20,7 @@
             var defaultPath = null;
             if (process.env.APPDATA) {
                 defaultPath = path.join(process.env.APPDATA, "DarkSoulsIII");
+                if (!fs.existsSync(defaultPath)) defaultPath = '.';
                 var directories = fs.readdirSync(defaultPath);
                 var saveDir = _.find(directories, function(o) {
                     return fs.statSync(path.join(defaultPath, o)).isDirectory;
