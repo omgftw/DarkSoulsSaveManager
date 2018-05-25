@@ -22,70 +22,70 @@
         function init() {
             //data object initialization - this will store all persistent data
             if (typeof svc.data === 'undefined' || svc.data === null)
-            svc.data = {};
+                svc.data = {};
             //Array of "new Save()"
             if (typeof svc.data.saves === 'undefined' || svc.data.saves === null)
-            svc.data.saves = [];
+                svc.data.saves = [];
             //Array of strings
             if (typeof svc.data.categories === 'undefined' || svc.data.categories === null)
-            svc.data.categories = [];
+                svc.data.categories = [];
 
             //Configurable settings
             if (typeof svc.data.settings === 'undefined' || svc.data.settings === null)
-            svc.data.settings = {};
+                svc.data.settings = {};
             if (typeof svc.data.settings.saveFileLocation === 'undefined' || svc.data.settings.saveFileLocation === null)
-            svc.data.settings.saveFileLocation = null;
+                svc.data.settings.saveFileLocation = null;
             if (typeof svc.data.settings.saveDirectory === 'undefined' || svc.data.settings.saveDirectory === null)
-            svc.data.settings.saveDirectory = "saves/";
+                svc.data.settings.saveDirectory = "saves/";
             if (typeof svc.data.settings.backupFileFormat === 'undefined' || svc.data.settings.backupFileFormat === null)
-            svc.data.settings.backupFileFormat = "{month}-{day}-{year}_{hours}-{minutes}-{seconds}";
+                svc.data.settings.backupFileFormat = "{month}-{day}-{year}_{hours}-{minutes}-{seconds}";
             if (typeof svc.data.settings.backupNameFormat === 'undefined' || svc.data.settings.backupNameFormat === null)
-            svc.data.settings.backupNameFormat = "{month}/{day}/{year} {hours}:{minutes}:{seconds}";
+                svc.data.settings.backupNameFormat = "{month}/{day}/{year} {hours}:{minutes}:{seconds}";
 
             //hotkey initialization
             if (typeof svc.data.settings.hotkeys === 'undefined' || svc.data.settings.hotkeys === null)
-            svc.data.settings.hotkeys = {};
+                svc.data.settings.hotkeys = {};
             if (typeof svc.data.settings.hotkeys.backup === 'undefined' || svc.data.settings.hotkeys.backup === null)
-            svc.data.settings.hotkeys.backup = {};
+                svc.data.settings.hotkeys.backup = {};
             if (typeof svc.data.settings.hotkeys.restore === 'undefined' || svc.data.settings.hotkeys.restore === null)
-            svc.data.settings.hotkeys.restore = {};
+                svc.data.settings.hotkeys.restore = {};
 
             //Backup hotkeys
             if (typeof svc.data.settings.hotkeys.backup.modifier1 === 'undefined' || svc.data.settings.hotkeys.backup.modifier1 === null)
-            svc.data.settings.hotkeys.backup.modifier1 = "CommandOrControl";
+                svc.data.settings.hotkeys.backup.modifier1 = "CommandOrControl";
             if (typeof svc.data.settings.hotkeys.backup.modifier2 === 'undefined' || svc.data.settings.hotkeys.backup.modifier2 === null)
-            svc.data.settings.hotkeys.backup.modifier2 = "Shift";
+                svc.data.settings.hotkeys.backup.modifier2 = "Shift";
             if (typeof svc.data.settings.hotkeys.backup.modifier3 === 'undefined' || svc.data.settings.hotkeys.backup.modifier3 === null)
-            svc.data.settings.hotkeys.backup.modifier3 = "B";
+                svc.data.settings.hotkeys.backup.modifier3 = "B";
 
             //Restore hotkeys
             if (typeof svc.data.settings.hotkeys.restore.modifier1 === 'undefined' || svc.data.settings.hotkeys.restore.modifier1 === null)
-            svc.data.settings.hotkeys.restore.modifier1 = "CommandOrControl";
+                svc.data.settings.hotkeys.restore.modifier1 = "CommandOrControl";
             if (typeof svc.data.settings.hotkeys.restore.modifier2 === 'undefined' || svc.data.settings.hotkeys.restore.modifier2 === null)
-            svc.data.settings.hotkeys.restore.modifier2 = "Shift";
+                svc.data.settings.hotkeys.restore.modifier2 = "Shift";
             if (typeof svc.data.settings.hotkeys.restore.modifier3 === 'undefined' || svc.data.settings.hotkeys.restore.modifier3 === null)
-            svc.data.settings.hotkeys.restore.modifier3 = "R";
+                svc.data.settings.hotkeys.restore.modifier3 = "R";
 
             if (typeof svc.data.settings.selectedCategory === 'undefined' || svc.data.settings.selectedCategory === null)
-            svc.data.settings.selectedCategory = null;
+                svc.data.settings.selectedCategory = null;
 
             if (typeof svc.data.settings.autosave === 'undefined' || svc.data.settings.autosave === null)
-            svc.data.settings.autosave = false;
+                svc.data.settings.autosave = false;
             if (typeof svc.data.settings.autosaveInterval === 'undefined' || svc.data.settings.autosaveInterval === null)
-            svc.data.settings.autosaveInterval = 60;
+                svc.data.settings.autosaveInterval = 60;
             if (typeof svc.data.settings.autosaveMaxLimit === 'undefined' || svc.data.settings.autosaveMaxLimit === null)
-            svc.data.settings.autosaveMaxLimit = false;
+                svc.data.settings.autosaveMaxLimit = false;
             if (typeof svc.data.settings.autosaveMaxCount === 'undefined' || svc.data.settings.autosaveMaxCount === null)
-            svc.data.settings.autosaveMaxCount = 10;
+                svc.data.settings.autosaveMaxCount = 10;
             if (typeof svc.data.autosaveStartTime === 'undefined' || svc.data.autosaveStartTime === null)
-            svc.data.autosaveStartTime = null;
+                svc.data.autosaveStartTime = null;
             if (typeof svc.data.autosaveTimeRemaining === 'undefined' || svc.data.autosaveTimeRemaining === null)
-            svc.data.autosaveTimeRemaining = null;
+                svc.data.autosaveTimeRemaining = null;
         }
 
         init();
 
-        svc.calculateAutosaveTimeRemaining = function() {
+        svc.calculateAutosaveTimeRemaining = function () {
             if (svc.data.settings.autosave && svc.data.autosaveStartTime) {
                 var timeLeft = "";
                 var dateDiffMinutes = ((svc.data.autosaveStartTime.getTime() + (svc.data.settings.autosaveInterval * 60000)) - new Date().getTime()) / 60000;
@@ -100,7 +100,7 @@
             }
         };
 
-        $interval(function () { 
+        $interval(function () {
             svc.calculateAutosaveTimeRemaining();
         }, 10000);
 
@@ -112,7 +112,7 @@
 
         //Imports
         var fs = require("fs");
-        const {app, globalShortcut} = require('electron').remote;
+        const { app, globalShortcut } = require('electron').remote;
 
         //Encode all data to JSON
         svc.saveToJson = function () {
@@ -134,7 +134,7 @@
         svc.loadSettings = function () {
             svc.loadFromJson(fs.readFileSync("settings.json", "utf8"));
             init();
-            
+
             //Set latest id
             var maxId = _.max(_.map(svc.data.saves, "id"))
             if (maxId) svc.newId(maxId);
@@ -230,7 +230,7 @@
             fs.copyFileSync(filePath, backupFileName);
             var fileName = saveName;
             var type = 'manual';
-            if (opts && opts.type) type = opts.type; 
+            if (opts && opts.type) type = opts.type;
             var save = new Save(fileName, backupFileName, svc.data.settings.selectedCategory, type);
             svc.data.saves.push(save);
 
@@ -247,8 +247,29 @@
 
         svc.restoreSave = function (id, event) {
             var save = _.find(svc.data.saves, { id: id });
-            fs.copyFileSync(save.path, svc.data.settings.saveFileLocation);
-            svc.showSuccessToast(messages.backupRestored);
+
+            // ensure backup exists
+            if (!fs.existsSync(save.path) || fs.readFileSync(save.path).length < 100) {
+                svc.showSuccessToast(messages.backupCorrupt);
+                return;
+            }
+
+            // if normal save seems legitimate (exists and larger than 100 bytes), create a backup.
+            if (fs.existsSync(svc.data.settings.saveFileLocation) && fs.readFileSync(svc.data.settings.saveFileLocation).length > 100) {
+                fs.copyFileSync(svc.data.settings.saveFileLocation, svc.data.settings.saveFileLocation + '.bak');
+            } else {
+                svc.showSuccessToast(messages.backupDestSaveCorrupt);
+                return;
+            }
+
+            //ensure backup exists
+            if (fs.existsSync(svc.data.settings.saveFileLocation + '.bak') && fs.readFileSync(svc.data.settings.saveFileLocation + '.bak').length > 100) {
+                fs.copyFileSync(save.path, svc.data.settings.saveFileLocation);
+                svc.showSuccessToast(messages.backupRestored);
+                return;
+            }
+            
+            svc.showSuccessToast(messages.backupDestBackupNotFound);
         };
 
         svc.deleteSave = function (id, event) {
