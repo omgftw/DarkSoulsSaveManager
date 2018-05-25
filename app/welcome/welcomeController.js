@@ -13,6 +13,7 @@
         //TODO load file data and redirect to main if exists
         if (fs.existsSync("settings.json")) {
             core.loadSettings();
+            if (core.data && core.data.settings && core.data.settings.saveFileLocation)
             vm.continue();
         }
 

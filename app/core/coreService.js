@@ -17,41 +17,73 @@
             this.time = new Date();
         };
 
-        //data object initialization - this will store all persistent data
-        svc.data = {};
-        //Array of "new Save()"
-        svc.data.saves = [];
-        //Array of strings
-        svc.data.categories = [];
+        // ensures all settings are initialized. Will set defaults if missing. 
+        // Allows for addition of new settings without breaking settings file
+        function init() {
+            //data object initialization - this will store all persistent data
+            if (typeof svc.data === 'undefined' || svc.data === null)
+            svc.data = {};
+            //Array of "new Save()"
+            if (typeof svc.data.saves === 'undefined' || svc.data.saves === null)
+            svc.data.saves = [];
+            //Array of strings
+            if (typeof svc.data.categories === 'undefined' || svc.data.categories === null)
+            svc.data.categories = [];
 
-        //Configurable settings
-        svc.data.settings = {};
-        svc.data.settings.saveFileLocation = null;
-        svc.data.settings.saveDirectory = "saves/";
-        svc.data.settings.backupFileFormat = "{month}-{day}-{year}_{hours}-{minutes}-{seconds}";
-        svc.data.settings.backupNameFormat = "{month}/{day}/{year} {hours}:{minutes}:{seconds}";
+            //Configurable settings
+            if (typeof svc.data.settings === 'undefined' || svc.data.settings === null)
+            svc.data.settings = {};
+            if (typeof svc.data.settings.saveFileLocation === 'undefined' || svc.data.settings.saveFileLocation === null)
+            svc.data.settings.saveFileLocation = null;
+            if (typeof svc.data.settings.saveDirectory === 'undefined' || svc.data.settings.saveDirectory === null)
+            svc.data.settings.saveDirectory = "saves/";
+            if (typeof svc.data.settings.backupFileFormat === 'undefined' || svc.data.settings.backupFileFormat === null)
+            svc.data.settings.backupFileFormat = "{month}-{day}-{year}_{hours}-{minutes}-{seconds}";
+            if (typeof svc.data.settings.backupNameFormat === 'undefined' || svc.data.settings.backupNameFormat === null)
+            svc.data.settings.backupNameFormat = "{month}/{day}/{year} {hours}:{minutes}:{seconds}";
 
-        //hotkey initialization
-        svc.data.settings.hotkeys = {};
-        svc.data.settings.hotkeys.backup = {};
-        svc.data.settings.hotkeys.restore = {};
+            //hotkey initialization
+            if (typeof svc.data.settings.hotkeys === 'undefined' || svc.data.settings.hotkeys === null)
+            svc.data.settings.hotkeys = {};
+            if (typeof svc.data.settings.hotkeys.backup === 'undefined' || svc.data.settings.hotkeys.backup === null)
+            svc.data.settings.hotkeys.backup = {};
+            if (typeof svc.data.settings.hotkeys.restore === 'undefined' || svc.data.settings.hotkeys.restore === null)
+            svc.data.settings.hotkeys.restore = {};
 
-        //Backup hotkeys
-        svc.data.settings.hotkeys.backup.modifier1 = "CommandOrControl";
-        svc.data.settings.hotkeys.backup.modifier2 = "Shift";
-        svc.data.settings.hotkeys.backup.modifier3 = "B";
+            //Backup hotkeys
+            if (typeof svc.data.settings.hotkeys.backup.modifier1 === 'undefined' || svc.data.settings.hotkeys.backup.modifier1 === null)
+            svc.data.settings.hotkeys.backup.modifier1 = "CommandOrControl";
+            if (typeof svc.data.settings.hotkeys.backup.modifier2 === 'undefined' || svc.data.settings.hotkeys.backup.modifier2 === null)
+            svc.data.settings.hotkeys.backup.modifier2 = "Shift";
+            if (typeof svc.data.settings.hotkeys.backup.modifier3 === 'undefined' || svc.data.settings.hotkeys.backup.modifier3 === null)
+            svc.data.settings.hotkeys.backup.modifier3 = "B";
 
-        //Restore hotkeys
-        svc.data.settings.hotkeys.restore.modifier1 = "CommandOrControl";
-        svc.data.settings.hotkeys.restore.modifier2 = "Shift";
-        svc.data.settings.hotkeys.restore.modifier3 = "R";
+            //Restore hotkeys
+            if (typeof svc.data.settings.hotkeys.restore.modifier1 === 'undefined' || svc.data.settings.hotkeys.restore.modifier1 === null)
+            svc.data.settings.hotkeys.restore.modifier1 = "CommandOrControl";
+            if (typeof svc.data.settings.hotkeys.restore.modifier2 === 'undefined' || svc.data.settings.hotkeys.restore.modifier2 === null)
+            svc.data.settings.hotkeys.restore.modifier2 = "Shift";
+            if (typeof svc.data.settings.hotkeys.restore.modifier3 === 'undefined' || svc.data.settings.hotkeys.restore.modifier3 === null)
+            svc.data.settings.hotkeys.restore.modifier3 = "R";
 
-        svc.data.settings.selectedCategory = null;
+            if (typeof svc.data.settings.selectedCategory === 'undefined' || svc.data.settings.selectedCategory === null)
+            svc.data.settings.selectedCategory = null;
 
-        svc.data.settings.autosave = false;
-        svc.data.settings.autosaveInterval = 60;
-        svc.data.autosaveStartTime = null;
-        svc.data.autosaveTimeRemaining = null;
+            if (typeof svc.data.settings.autosave === 'undefined' || svc.data.settings.autosave === null)
+            svc.data.settings.autosave = false;
+            if (typeof svc.data.settings.autosaveInterval === 'undefined' || svc.data.settings.autosaveInterval === null)
+            svc.data.settings.autosaveInterval = 60;
+            if (typeof svc.data.settings.autosaveMaxLimit === 'undefined' || svc.data.settings.autosaveMaxLimit === null)
+            svc.data.settings.autosaveMaxLimit = false;
+            if (typeof svc.data.settings.autosaveMaxCount === 'undefined' || svc.data.settings.autosaveMaxCount === null)
+            svc.data.settings.autosaveMaxCount = 10;
+            if (typeof svc.data.autosaveStartTime === 'undefined' || svc.data.autosaveStartTime === null)
+            svc.data.autosaveStartTime = null;
+            if (typeof svc.data.autosaveTimeRemaining === 'undefined' || svc.data.autosaveTimeRemaining === null)
+            svc.data.autosaveTimeRemaining = null;
+        }
+
+        init();
 
         svc.calculateAutosaveTimeRemaining = function() {
             if (svc.data.settings.autosave && svc.data.autosaveStartTime) {
@@ -94,13 +126,15 @@
 
         //Persists data to the settings file
         svc.saveSettings = function () {
-            fs.createWriteStream("settings.json").write(svc.saveToJson());
+            fs.writeFileSync("settings.json", svc.saveToJson(), 'utf8');
+            // fs.createWriteStream("settings.json").write(svc.saveToJson());
         };
 
         //Loads data from the settings file
         svc.loadSettings = function () {
-            svc.loadFromJson(fs.readFileSync("settings.json"));
-
+            svc.loadFromJson(fs.readFileSync("settings.json", "utf8"));
+            init();
+            
             //Set latest id
             var maxId = _.max(_.map(svc.data.saves, "id"))
             if (maxId) svc.newId(maxId);

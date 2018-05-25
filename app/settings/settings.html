@@ -53,6 +53,21 @@
                     </div>
                 </md-input-container>
             </div>
+            <div>
+                <md-checkbox ng-model="vm.data.settings.autosaveMaxLimit" aria-label="Auto-Save Max Save Limit"></md-checkbox>
+                Auto-Save Max Save Limit (Automatically deletes old auto-saves beyond a certain amount. Will not delete manually created saves.)
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Auto-Save Max Save Amount</label>
+                    <input type="text" name="autosaveMaxCount" ng-model="vm.data.settings.autosaveMaxCount" ng-pattern="/^\d+$/" />
+                    <div ng-messages="vm.settingsForm.autosaveMaxCount.$error">
+                        <div ng-message="pattern">
+                            Must be a valid number
+                        </div>
+                    </div>
+                </md-input-container>
+            </div>
 
             <div>
                 <div>
