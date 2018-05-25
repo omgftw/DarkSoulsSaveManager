@@ -27,8 +27,7 @@
   },
   "devDependencies": {
     "asar": "^0.13.0",
-    "electron": "^1.4.1",
-    "electron-prebuilt": "^1.4.13",
+    "electron": "^2.0.2",
     "fs-jetpack": "^0.10.5",
     "gulp": "^3.9.1",
     "gulp-minify-css": "^1.2.4",

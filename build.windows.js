@@ -20,7 +20,7 @@ function init() {
 }
 
 function copyElectron() {
-    return projectDir.copyAsync('./node_modules/electron-prebuilt/dist', buildDir.path(), { overwrite: true });
+    return projectDir.copyAsync('./node_modules/electron/dist', buildDir.path(), { overwrite: true });
 }
 
 function cleanupRuntime() {

@@ -25,7 +25,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  const isProd = process.execPath.search('electron-prebuilt') === -1;
+  const isProd = process.execPath.search('electron') === -1;
   if (!isProd) {
     mainWindow.webContents.openDevTools()
   }

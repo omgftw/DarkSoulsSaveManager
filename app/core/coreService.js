@@ -8,11 +8,13 @@
             return currentId++;
         }
 
-        function Save(fileName, filePath, category) {
+        function Save(fileName, filePath, category, type) {
             this.id = svc.newId();
             this.path = filePath;
             this.name = fileName;
             this.category = category;
+            this.type = type;
+            this.time = new Date();
         };
 
         //data object initialization - this will store all persistent data
@@ -180,7 +182,7 @@
         //Returns: path of newly create backup : string
         //Params:
         //  [filePath]: path to file to be backed up. Will pull from saveFileLocation setting if not passed : string
-        svc.createBackup = function (filePath) {
+        svc.createBackup = function (filePath, opts) {
             var currentDate = new Date();
             var fileName = svc.getDateString(currentDate);
             var saveName = svc.getDateString(currentDate, svc.data.settings.backupNameFormat);
@@ -190,9 +192,12 @@
                 return;
             }
 
-            var file = fs.createReadStream(filePath || svc.data.settings.saveFileLocation).pipe(fs.createWriteStream(backupFileName));
+            filePath = filePath || svc.data.settings.saveFileLocation, backupFileName;
+            fs.copyFileSync(filePath, backupFileName);
             var fileName = saveName;
-            var save = new Save(fileName, file.path, svc.data.settings.selectedCategory);
+            var type = 'manual';
+            if (opts && opts.type) type = opts.type; 
+            var save = new Save(fileName, backupFileName, svc.data.settings.selectedCategory, type);
             svc.data.saves.push(save);
 
             svc.saveSettings();
@@ -208,7 +213,7 @@
 
         svc.restoreSave = function (id, event) {
             var save = _.find(svc.data.saves, { id: id });
-            var file = fs.createReadStream(save.path).pipe(fs.createWriteStream(svc.data.settings.saveFileLocation));
+            fs.copyFileSync(save.path, svc.data.settings.saveFileLocation);
             svc.showSuccessToast(messages.backupRestored);
         };
 
@@ -301,7 +306,7 @@
             svc.stopAutosave();
             svc.data.autosaveStartTime = new Date();
             svc.data.settings.autosaveFn = $interval(function () {
-                svc.createBackup();
+                svc.createBackup(null, { type: 'auto' });
                 svc.data.autosaveStartTime = new Date();
             }, svc.data.settings.autosaveInterval * 60000);
 

@@ -4,3 +4,4 @@ dist
 saves
 settings.json
 debug.log
+*.zip
