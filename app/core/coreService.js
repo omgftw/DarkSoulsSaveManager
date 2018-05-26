@@ -226,13 +226,16 @@
                 return;
             }
 
-            filePath = filePath || svc.data.settings.saveFileLocation, backupFileName;
+            filePath = filePath || svc.data.settings.saveFileLocation;
             fs.copyFileSync(filePath, backupFileName);
             var fileName = saveName;
             var type = 'manual';
             if (opts && opts.type) type = opts.type;
             var save = new Save(fileName, backupFileName, svc.data.settings.selectedCategory, type);
             svc.data.saves.push(save);
+
+            // Remove oldest autosaves that are higher then the max autosave count
+            // svc.cleanupAutosaves();
 
             svc.saveSettings();
             if (!filePath) {
@@ -268,7 +271,7 @@
                 svc.showSuccessToast(messages.backupRestored);
                 return;
             }
-            
+
             svc.showSuccessToast(messages.backupDestBackupNotFound);
         };
 
@@ -384,6 +387,24 @@
                 svc.stopAutosave();
             }
         }, true);
+
+        // svc.cleanupAutosaves = function () {
+        //     if (!svc.data.settings.autosaveMaxLimit) return;
+        //     if (svc.data.saves.length === 0) return;
+        //     var autosaves = _.filter(svc.data.saves, x => x.type === 'auto');
+        //     if (autosaves.length > svc.data.settings.autosaveMaxCount) {
+        //         var toRemove = _(autosaves).sortBy(x => x.time).reverse().slice(parseInt(svc.data.settings.autosaveMaxCount)).value();
+        //         for (var i = 0; i < toRemove.length; i++) {
+        //             var currentSave = toRemove[i];
+        //             if (fs.existsSync(currentSave.path))
+        //                 fs.unlinkSync(currentSave.path);
+        //             if (!fs.existsSync(currentSave.path)) {
+        //                 svc.data.saves.splice(currentSave, 1);
+        //             }
+        //         }
+        //         console.log(toRemove);
+        //     }
+        // };
     };
 
 

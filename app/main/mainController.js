@@ -63,7 +63,7 @@
         };
 
         vm.createBackup = function () {
-            core.createBackup(vm.settings.selectedCategory);
+            core.createBackup();
             vm.categorySelect();
         };
 
