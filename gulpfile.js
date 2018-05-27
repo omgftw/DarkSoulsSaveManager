@@ -24,7 +24,8 @@ gulp.task('copy', ['clean'], function () {
             '*.css',
             'main.js',
             'package.json',
-            '*.svg'
+            '*.svg',
+            'notify.mp3'
         ]
     });
 });

@@ -1,7 +1,7 @@
 [Setup]
 AppName=Dark Souls Save Manager
 AppVersion=1.0.4
-DefaultDirName={pf}\DarkSoulsSaveManager
+DefaultDirName={localappdata}\DarkSoulsSaveManager
 DefaultGroupName=Dark Souls Save Manager
 UninstallDisplayIcon={app}\DarkSoulsSaveManager.exe
 ; Compression=lzma2

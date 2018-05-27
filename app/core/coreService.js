@@ -242,6 +242,8 @@
         //Params:
         //  [filePath]: path to file to be backed up. Will pull from saveFileLocation setting if not passed : string
         svc.createBackup = function (opts) {
+            // initialize opts if not passed in to allow checking of props without errors
+            opts = opts || {};
             var currentDate = new Date();
             var fileName = svc.getDateString(currentDate);
             var saveName = svc.getDateString(currentDate, svc.data.settings.backupNameFormat);
