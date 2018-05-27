@@ -53,7 +53,7 @@
                     </div>
                 </md-input-container>
             </div>
-            <!-- <div>
+            <div>
                 <md-checkbox ng-model="vm.data.settings.autosaveMaxLimit" aria-label="Auto-Save Max Save Limit"></md-checkbox>
                 Auto-Save Max Save Limit (Automatically deletes old auto-saves beyond a certain amount. Will not delete manually created saves.)
             </div>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </md-input-container>
-            </div> -->
+            </div>
 
             <div>
                 <div>
@@ -116,6 +116,15 @@
             <div>
                 <md-checkbox ng-model="vm.data.settings.notificationSound" aria-label="Backup/Restore Notification Sound"></md-checkbox>
                 Backup/Restore Notification Sound
+            </div>
+            <div id="notification-volume-container" ng-if="vm.data.settings.notificationSound === true">
+                <div>Notification Volume</div>
+                <md-slider-container>
+                    <md-slider flex min="0" max="100" ng-model="vm.data.settings.notificationSoundVolume" aria-label="Notification Volume"></md-slider>
+                    <md-input-container>
+                        <input flex type="number" ng-model="vm.data.settings.notificationSoundVolume" aria-label="Notification Volume" aria-controls="notification-volume-slider" readonly>
+                    </md-input-container>
+              </md-slider-container>
             </div>
 
             <div>

@@ -75,6 +75,11 @@
             <!--<img alt="{{ save.name }}" ng-src="{{ person.img }}" class="md-avatar" />-->
             <p>{{ save.name + (save.category && !vm.settings.selectedCategory ? (" (" + save.category + ")") : "") }}</p>
             <!--<md-checkbox class="md-secondary" ng-model="person.selected"></md-checkbox>-->
+            <md-icon ng-if="save.type === 'auto'" md-svg-src="content/save.svg" ng-click="vm.makeAutosavePermanent(save.id, $event)" aria-label="Keep autosave (won't be auto-deleted)y" class="md-secondary md-hue-3">
+              <md-tooltip md-direction="bottom">
+                Keep autosave (won't be auto-deleted)
+              </md-tooltip>
+            </md-icon>
             <md-icon md-svg-src="content/done.svg" ng-click="vm.selectSave(save.id, $event)" aria-label="Set as Primary" class="md-secondary md-hue-3">
               <md-tooltip md-direction="bottom">
                 Set as Primary

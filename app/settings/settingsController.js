@@ -25,6 +25,7 @@
             core.loadFromJson(JSON.stringify(vm.data));
             core.saveSettings();
             core.showSuccessToast("Settings Saved Successfully")
+            core.updateNotificationVolume();
             $location.path("/main")
         };
 

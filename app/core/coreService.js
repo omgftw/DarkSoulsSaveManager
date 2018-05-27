@@ -51,6 +51,8 @@
                 svc.data.settings.notificationSound = true;
             if (typeof svc.data.settings.windowsNotification === 'undefined' || svc.data.settings.windowsNotification === null)
                 svc.data.settings.windowsNotification = true;
+            if (typeof svc.data.settings.notificationSoundVolume === 'undefined' || svc.data.settings.notificationSoundVolume === null)
+                svc.data.settings.notificationSoundVolume = 100;
 
             // Hotkey initialization
             if (typeof svc.data.settings.hotkeys === 'undefined' || svc.data.settings.hotkeys === null)
@@ -90,7 +92,7 @@
             if (typeof svc.data.settings.autosaveMaxCount === 'undefined' || svc.data.settings.autosaveMaxCount === null)
                 svc.data.settings.autosaveMaxCount = 10;
             if (typeof svc.data.autosaveStartTime === 'undefined' || svc.data.autosaveStartTime === null)
-                svc.data.autosaveStartTime = null;
+                svc.data.autosaveStartTime = new Date();
             if (typeof svc.data.autosaveTimeRemaining === 'undefined' || svc.data.autosaveTimeRemaining === null)
                 svc.data.autosaveTimeRemaining = null;
         }
@@ -262,7 +264,7 @@
             svc.data.saves.push(save);
 
             // Remove oldest autosaves that are higher then the max autosave count
-            // svc.cleanupAutosaves();
+            svc.cleanupAutosaves();
 
             svc.saveSettings();
 
@@ -421,23 +423,41 @@
             }
         }, true);
 
-        // svc.cleanupAutosaves = function () {
-        //     if (!svc.data.settings.autosaveMaxLimit) return;
-        //     if (svc.data.saves.length === 0) return;
-        //     var autosaves = _.filter(svc.data.saves, x => x.type === 'auto');
-        //     if (autosaves.length > svc.data.settings.autosaveMaxCount) {
-        //         var toRemove = _(autosaves).sortBy(x => x.time).reverse().slice(parseInt(svc.data.settings.autosaveMaxCount)).value();
-        //         for (var i = 0; i < toRemove.length; i++) {
-        //             var currentSave = toRemove[i];
-        //             if (fs.existsSync(currentSave.path))
-        //                 fs.unlinkSync(currentSave.path);
-        //             if (!fs.existsSync(currentSave.path)) {
-        //                 svc.data.saves.splice(currentSave, 1);
-        //             }
-        //         }
-        //         console.log(toRemove);
-        //     }
-        // };
+        svc.makeAutosavePermanent = function (id, event) {
+            var save = _.find(svc.data.saves, { id: id });
+            save.type = 'manual';
+            svc.saveSettings();
+        }
+
+        svc.cleanupAutosaves = function () {
+            if (!svc.data.settings.autosaveMaxLimit) return;
+            if (svc.data.saves.length === 0) return;
+            var autosaves = _.filter(svc.data.saves, x => x.type === 'auto');
+            if (autosaves.length > svc.data.settings.autosaveMaxCount) {
+                var sliceAmt = svc.data.settings.autosaveMaxCount > 0 ? parseInt(svc.data.settings.autosaveMaxCount) : 0;
+                var toRemove = _(autosaves).sortBy(x => x.time).reverse().slice(sliceAmt).value();
+                for (var i = 0; i < toRemove.length; i++) {
+                    var currentSave = toRemove[i];
+                    if (fs.existsSync(currentSave.path))
+                        fs.unlinkSync(currentSave.path);
+                    if (!fs.existsSync(currentSave.path)) {
+                        // svc.data.saves.splice(currentSave, 1);
+                        var removalIndex = svc.data.saves.indexOf(currentSave);
+                        if (removalIndex >= 0)
+                            svc.data.saves.splice(removalIndex, 1);
+                    }
+                }
+                console.log(toRemove);
+            }
+        };
+
+        svc.updateNotificationVolume = function () {
+            document.getElementById('success-notification').volume = (svc.data.settings.notificationSoundVolume / 100);
+        }
+
+        window.setTimeout(function () {
+            svc.updateNotificationVolume();
+        }, 0);
     };
 
 

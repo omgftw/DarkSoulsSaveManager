@@ -142,6 +142,10 @@
             }
         };
 
+        vm.makeAutosavePermanent = function (id, event) {
+            core.makeAutosavePermanent(id, event);
+        }
+
         vm.changeCategory = function (saveId, saveName, event) {
             dialogService.categoryDialog(saveId, saveName, event).then(function (selectedCategory) {
                 core.changeCategory(saveId, selectedCategory, event);
