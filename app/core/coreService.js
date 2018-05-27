@@ -127,7 +127,7 @@
         //Imports
         var fs = require("fs");
         var path = require('path');
-        const { app, globalShortcut } = require('electron').remote;
+        const { app, globalShortcut, dialog, getCurrentWindow } = require('electron').remote;
 
         //Encode all data to JSON
         svc.saveToJson = function () {
@@ -141,7 +141,15 @@
 
         //Persists data to the settings file
         svc.saveSettings = function () {
-            fs.writeFileSync("settings.json", svc.saveToJson(), 'utf8');
+            try {
+                fs.writeFileSync("settings.json", svc.saveToJson(), 'utf8');
+            } catch(ex) {
+                dialog.showMessageBox(null, {
+                    title: 'Cannot Save',
+                    message: 'Could not save to current folder. Please either run the program as admin or install it to a folder that does not require admin permissions.'
+                });
+                getCurrentWindow().close();
+            }
             // fs.createWriteStream("settings.json").write(svc.saveToJson());
         };
 

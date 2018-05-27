@@ -6,7 +6,7 @@ DefaultGroupName=Dark Souls Save Manager
 UninstallDisplayIcon={app}\DarkSoulsSaveManager.exe
 ; Compression=lzma2
 SolidCompression=yes
-OutputBaseFilename=DarkSoulsSaveManager
+OutputBaseFilename=DarkSoulsSaveManagerInstaller
 ; OutputDir=userdocs:Inno Setup Examples Output
 
 [Files]
