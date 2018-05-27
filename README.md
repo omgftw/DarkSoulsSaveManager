@@ -15,6 +15,8 @@ After making changes hit "Ctrl+R" or select "View -> Reload" From the menu
 
 ## To build:  
 Get node: https://nodejs.org  
+Get InnoSetup
 Run "npm install" from command line in the root directory (The directory containing "package.json")  
-Run "gulp electron-build"  
-Run "electron.exe" in the "dist" folder  
+Run "gulp build"  
+Run the installer.iss file using InnoSetup  
+The installer can be found in the "Output" directory
