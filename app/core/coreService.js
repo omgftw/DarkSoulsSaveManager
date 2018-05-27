@@ -150,7 +150,6 @@
                 });
                 getCurrentWindow().close();
             }
-            // fs.createWriteStream("settings.json").write(svc.saveToJson());
         };
 
         //Loads data from the settings file

@@ -5,7 +5,7 @@ DefaultDirName={localappdata}\DarkSoulsSaveManager
 DefaultGroupName=Dark Souls Save Manager
 UninstallDisplayIcon={app}\DarkSoulsSaveManager.exe
 SolidCompression=yes
-OutputBaseFilename=DarkSoulsSaveManagerInstaller
+OutputBaseFilename=DarkSoulsSaveManagerInstaller_{#SetupSetting("AppVersion")}
 
 [Files]
 Source: "dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
