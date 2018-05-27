@@ -485,7 +485,7 @@
                             Save Name: ${save.name}
                         </div>
                         <div>
-                            Expected Save Location: ${path.join(__dirname, save.path)}
+                            Expected Save Location: ${path.resolve(save.path)}
                         </div>
                     </div>
                     <br>
