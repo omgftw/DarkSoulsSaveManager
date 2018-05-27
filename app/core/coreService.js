@@ -1,4 +1,6 @@
 (function () {
+    // const remote = require('electron').remote
+
     var coreService = function ($rootScope, $mdToast, $mdDialog, messages, $interval) {
         var svc = this;
 
@@ -20,17 +22,19 @@
         // ensures all settings are initialized. Will set defaults if missing. 
         // Allows for addition of new settings without breaking settings file
         function init() {
-            //data object initialization - this will store all persistent data
+            // data object initialization - this will store all persistent data
             if (typeof svc.data === 'undefined' || svc.data === null)
                 svc.data = {};
-            //Array of "new Save()"
+
+            // Array of "new Save()"
             if (typeof svc.data.saves === 'undefined' || svc.data.saves === null)
                 svc.data.saves = [];
-            //Array of strings
+
+            // Array of strings
             if (typeof svc.data.categories === 'undefined' || svc.data.categories === null)
                 svc.data.categories = [];
 
-            //Configurable settings
+            // Configurable settings
             if (typeof svc.data.settings === 'undefined' || svc.data.settings === null)
                 svc.data.settings = {};
             if (typeof svc.data.settings.saveFileLocation === 'undefined' || svc.data.settings.saveFileLocation === null)
@@ -42,7 +46,13 @@
             if (typeof svc.data.settings.backupNameFormat === 'undefined' || svc.data.settings.backupNameFormat === null)
                 svc.data.settings.backupNameFormat = "{month}/{day}/{year} {hours}:{minutes}:{seconds}";
 
-            //hotkey initialization
+            // Notification settings
+            if (typeof svc.data.settings.notificationSound === 'undefined' || svc.data.settings.notificationSound === null)
+                svc.data.settings.notificationSound = true;
+            if (typeof svc.data.settings.windowsNotification === 'undefined' || svc.data.settings.windowsNotification === null)
+                svc.data.settings.windowsNotification = true;
+
+            // Hotkey initialization
             if (typeof svc.data.settings.hotkeys === 'undefined' || svc.data.settings.hotkeys === null)
                 svc.data.settings.hotkeys = {};
             if (typeof svc.data.settings.hotkeys.backup === 'undefined' || svc.data.settings.hotkeys.backup === null)
@@ -50,7 +60,7 @@
             if (typeof svc.data.settings.hotkeys.restore === 'undefined' || svc.data.settings.hotkeys.restore === null)
                 svc.data.settings.hotkeys.restore = {};
 
-            //Backup hotkeys
+            // Backup hotkey
             if (typeof svc.data.settings.hotkeys.backup.modifier1 === 'undefined' || svc.data.settings.hotkeys.backup.modifier1 === null)
                 svc.data.settings.hotkeys.backup.modifier1 = "CommandOrControl";
             if (typeof svc.data.settings.hotkeys.backup.modifier2 === 'undefined' || svc.data.settings.hotkeys.backup.modifier2 === null)
@@ -58,7 +68,7 @@
             if (typeof svc.data.settings.hotkeys.backup.modifier3 === 'undefined' || svc.data.settings.hotkeys.backup.modifier3 === null)
                 svc.data.settings.hotkeys.backup.modifier3 = "B";
 
-            //Restore hotkeys
+            // Restore hotkey
             if (typeof svc.data.settings.hotkeys.restore.modifier1 === 'undefined' || svc.data.settings.hotkeys.restore.modifier1 === null)
                 svc.data.settings.hotkeys.restore.modifier1 = "CommandOrControl";
             if (typeof svc.data.settings.hotkeys.restore.modifier2 === 'undefined' || svc.data.settings.hotkeys.restore.modifier2 === null)
@@ -66,9 +76,11 @@
             if (typeof svc.data.settings.hotkeys.restore.modifier3 === 'undefined' || svc.data.settings.hotkeys.restore.modifier3 === null)
                 svc.data.settings.hotkeys.restore.modifier3 = "R";
 
+            // Category
             if (typeof svc.data.settings.selectedCategory === 'undefined' || svc.data.settings.selectedCategory === null)
                 svc.data.settings.selectedCategory = null;
 
+            // Auto-save settings
             if (typeof svc.data.settings.autosave === 'undefined' || svc.data.settings.autosave === null)
                 svc.data.settings.autosave = false;
             if (typeof svc.data.settings.autosaveInterval === 'undefined' || svc.data.settings.autosaveInterval === null)
@@ -213,10 +225,23 @@
             return dateFormatString;
         };
 
+        svc.notify = function (message) {
+            svc.showSuccessToast(message);
+            if (svc.data.settings.windowsNotification) {
+                var notification = new Notification('Dark Souls Save Manager', {
+                    body: message,
+                    silent: true
+                });
+            }
+            if (svc.data.settings.notificationSound) {
+                document.getElementById('success-notification').play();
+            }
+        }
+
         //Returns: path of newly create backup : string
         //Params:
         //  [filePath]: path to file to be backed up. Will pull from saveFileLocation setting if not passed : string
-        svc.createBackup = function (filePath, opts) {
+        svc.createBackup = function (opts) {
             var currentDate = new Date();
             var fileName = svc.getDateString(currentDate);
             var saveName = svc.getDateString(currentDate, svc.data.settings.backupNameFormat);
@@ -226,7 +251,7 @@
                 return;
             }
 
-            filePath = filePath || svc.data.settings.saveFileLocation;
+            filePath = opts.filePath || svc.data.settings.saveFileLocation;
             fs.copyFileSync(filePath, backupFileName);
             var fileName = saveName;
             var type = 'manual';
@@ -238,8 +263,11 @@
             // svc.cleanupAutosaves();
 
             svc.saveSettings();
-            if (!filePath) {
-                svc.showSuccessToast(messages.backupCreated)
+
+            //TODO ensure backup was created successfully
+            // if no file path was passed in (save importing)
+            if (!opts.filePath) {
+                svc.notify(messages.backupCreated);
             }
 
             svc.functionManager.categorySelect();
@@ -268,7 +296,10 @@
             //ensure backup exists
             if (fs.existsSync(svc.data.settings.saveFileLocation + '.bak') && fs.readFileSync(svc.data.settings.saveFileLocation + '.bak').length > 100) {
                 fs.copyFileSync(save.path, svc.data.settings.saveFileLocation);
-                svc.showSuccessToast(messages.backupRestored);
+
+
+                svc.notify(messages.backupRestored);
+
                 return;
             }
 
@@ -364,7 +395,7 @@
             svc.stopAutosave();
             svc.data.autosaveStartTime = new Date();
             svc.data.settings.autosaveFn = $interval(function () {
-                svc.createBackup(null, { type: 'auto' });
+                svc.createBackup({ type: 'auto' });
                 svc.data.autosaveStartTime = new Date();
             }, svc.data.settings.autosaveInterval * 60000);
 

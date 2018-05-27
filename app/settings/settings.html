@@ -53,7 +53,7 @@
                     </div>
                 </md-input-container>
             </div>
-            <div>
+            <!-- <div>
                 <md-checkbox ng-model="vm.data.settings.autosaveMaxLimit" aria-label="Auto-Save Max Save Limit"></md-checkbox>
                 Auto-Save Max Save Limit (Automatically deletes old auto-saves beyond a certain amount. Will not delete manually created saves.)
             </div>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </md-input-container>
-            </div>
+            </div> -->
 
             <div>
                 <div>
@@ -111,6 +111,16 @@
                         <md-option ng-repeat="char in vm.characters" ng-value="char">{{char}}</md-option>
                     </md-select>
                 </div>
+            </div>
+
+            <div>
+                <md-checkbox ng-model="vm.data.settings.notificationSound" aria-label="Backup/Restore Notification Sound"></md-checkbox>
+                Backup/Restore Notification Sound
+            </div>
+
+            <div>
+                <md-checkbox ng-model="vm.data.settings.windowsNotification" aria-label="Backup/Restore Windows Notification"></md-checkbox>
+                Backup/Restore Windows Notification
             </div>
 
             <md-button class="md-raised" ng-click="vm.cancel()">Cancel</md-button>

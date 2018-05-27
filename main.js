@@ -11,6 +11,9 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
+app.setAppUserModelId("com.omgftw.dssm");
+app.setAsDefaultProtocolClient('dssm');
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})

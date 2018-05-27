@@ -2,6 +2,7 @@ node_modules
 build
 dist
 saves
+Output
 DarkSoulsSaveManager
 settings.json*
 debug.log
