@@ -71,7 +71,7 @@
       <form name="saveForm">
         <md-list>
           <md-subheader class="md-no-sticky">Saves</md-subheader>
-          <md-list-item ng-repeat="save in vm.saves track by save.id" ng-click="vm.selectSave(save.id, $event)" class="noright" md-colors="{background: save.selected ? 'blue' : 'grey-700' }">
+          <md-list-item ng-repeat="save in vm.saves track by save.id" ng-if="!vm.settings.selectedCategory || save.category === vm.settings.selectedCategory" ng-click="vm.selectSave(save.id, $event)" class="noright" md-colors="{background: save.selected ? 'blue' : 'grey-700' }">
             <!--<img alt="{{ save.name }}" ng-src="{{ person.img }}" class="md-avatar" />-->
             <p>{{ save.name + (save.category && !vm.settings.selectedCategory ? (" (" + save.category + ")") : "") }}</p>
             <!--<md-checkbox class="md-secondary" ng-model="person.selected"></md-checkbox>-->

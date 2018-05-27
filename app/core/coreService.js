@@ -126,6 +126,7 @@
 
         //Imports
         var fs = require("fs");
+        var path = require('path');
         const { app, globalShortcut } = require('electron').remote;
 
         //Encode all data to JSON
@@ -274,7 +275,6 @@
                 svc.notify(messages.backupCreated);
             }
 
-            svc.functionManager.categorySelect();
             svc.selectSave(save.id, null, false);
 
             return backupFileName;
@@ -310,18 +310,31 @@
             svc.showSuccessToast(messages.backupDestBackupNotFound);
         };
 
-        svc.deleteSave = function (id, event) {
+        svc.deleteSave = function (id, event, skipSave, skipFileDelete) {
             var saveIndex = _.findIndex(svc.data.saves, { id: id });
             var save = svc.data.saves[saveIndex];
 
-            svc.data.saves.splice(saveIndex, 1);
+            if (saveIndex >= 0) {
+                svc.data.saves.splice(saveIndex, 1);
 
-            if (fs.existsSync(save.path)) {
-                fs.unlinkSync(save.path);
+                if (!skipFileDelete && fs.existsSync(save.path)) {
+                    fs.unlinkSync(save.path);
+                }
+                if (!fs.existsSync(save.path)) {
+                    if (!skipSave) {
+                        svc.saveSettings();
+                        svc.showSuccessToast(messages.backupDeleted);
+                    }
+                }
+            }
+        };
+
+        svc.deleteSaves = function (saves, skipFileDelete) {
+            for (var i = 0; i < saves.length; i++) {
+                svc.deleteSave(saves[i].id, null, true, skipFileDelete);
             }
             svc.saveSettings();
-            svc.showSuccessToast(messages.backupDeleted);
-        };
+        }
 
         svc.renameSave = function (id, newName, event) {
             var save = _.find(svc.data.saves, { id: id });
@@ -436,18 +449,7 @@
             if (autosaves.length > svc.data.settings.autosaveMaxCount) {
                 var sliceAmt = svc.data.settings.autosaveMaxCount > 0 ? parseInt(svc.data.settings.autosaveMaxCount) : 0;
                 var toRemove = _(autosaves).sortBy(x => x.time).reverse().slice(sliceAmt).value();
-                for (var i = 0; i < toRemove.length; i++) {
-                    var currentSave = toRemove[i];
-                    if (fs.existsSync(currentSave.path))
-                        fs.unlinkSync(currentSave.path);
-                    if (!fs.existsSync(currentSave.path)) {
-                        // svc.data.saves.splice(currentSave, 1);
-                        var removalIndex = svc.data.saves.indexOf(currentSave);
-                        if (removalIndex >= 0)
-                            svc.data.saves.splice(removalIndex, 1);
-                    }
-                }
-                console.log(toRemove);
+                svc.deleteSaves(toRemove);
             }
         };
 
@@ -455,9 +457,54 @@
             document.getElementById('success-notification').volume = (svc.data.settings.notificationSoundVolume / 100);
         }
 
-        window.setTimeout(function () {
-            svc.updateNotificationVolume();
-        }, 0);
+        // Checks to ensure all save files actually exist
+        svc.checkSaves = function () {
+            var promises = [];
+            for (var i = 0; i < svc.data.saves.length; i++) {
+                let save = svc.data.saves[i];
+                var promise = new Promise((resolve, reject) => {
+                    fs.exists(save.path, (result) => {
+                        resolve({
+                            exists: result,
+                            save: save
+                        });
+                    });
+                });
+                promises.push(promise);
+            }
+
+            Promise.all(promises).then(function (saves) {
+                var missingSaves = saves.filter(x => !x.exists).map(x => x.save);
+                if (missingSaves.length === 0) return;
+                var htmlContent = '<div>Found missing backup files. Would you like to remove these from the list?</div><br>'
+                for (var i = 0; i < missingSaves.length; i++) {
+                    var save = missingSaves[i];
+                    htmlContent += `
+                    <div>
+                        <div>
+                            Save Name: ${save.name}
+                        </div>
+                        <div>
+                            Expected Save Location: ${path.join(__dirname, save.path)}
+                        </div>
+                    </div>
+                    <br>
+                    `
+                }
+                var confirm = $mdDialog.confirm()
+                    .title('Remove Missing Backups')
+                    .htmlContent(htmlContent)
+                    .ariaLabel('Remove Missing Backups')
+                    .ok('Remove Missing Backups')
+                    .cancel('Cancel');
+
+                $mdDialog.show(confirm).then(function () {
+                    svc.deleteSaves(missingSaves, true);
+                }, function () {
+                    //cancel
+                });
+            });
+        }
     };
 
 

@@ -55,16 +55,11 @@
         };
 
         vm.categorySelect = function () {
-            if (vm.settings.selectedCategory) {
-                vm.saves = _.filter(core.data.saves, { category: vm.settings.selectedCategory });
-            } else {
-                vm.saves = core.data.saves;
-            }
+            core.saveSettings();
         };
 
         vm.createBackup = function () {
             core.createBackup();
-            vm.categorySelect();
         };
 
         vm.restoreSave = function (id, event) {
@@ -81,7 +76,6 @@
 
             $mdDialog.show(confirm).then(function () {
                 core.deleteSave(id, event);
-                vm.categorySelect();
             }, function () {
                 //cancel
             });
@@ -135,7 +129,6 @@
                 $mdDialog.show(confirm).then(function () {
                     core.removeCategory(vm.settings.selectedCategory, event);
                     vm.settings.selectedCategory = null;
-                    vm.categorySelect();
                 }, function () {
                     //cancel
                 });
@@ -152,11 +145,9 @@
             }, function () { });
         };
 
-        vm.categorySelect();
         core.registerShortcuts();
-
-        //register function for global use
-        core.functionManager.add("categorySelect", vm.categorySelect);
+        core.checkSaves();
+        core.updateNotificationVolume();
     };
 
     angular.module("app").controller("mainController", ["$scope", "$location", "$mdDialog", "$mdToast", "core", "dialogService", "messages", mainController]);

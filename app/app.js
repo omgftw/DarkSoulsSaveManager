@@ -7,7 +7,8 @@
         'ngRoute',
         'ngMaterial',
         'ngAnimate',
-        'ngMessages'
+        'ngMessages',
+        'ngSanitize'
     ])
         .config(['$routeProvider', '$mdThemingProvider', function ($routeProvider, $mdThemingProvider) {
             $routeProvider.when('/', {
