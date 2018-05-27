@@ -381,6 +381,7 @@
 
         svc.addCategory = function (categoryName, event) {
             svc.data.categories.push(categoryName);
+            svc.data.settings.selectedCategory = categoryName;
 
             svc.saveSettings();
         };
