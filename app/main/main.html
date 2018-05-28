@@ -73,6 +73,13 @@
           <md-subheader class="md-no-sticky">Saves</md-subheader>
           <md-list-item ng-repeat="save in vm.saves track by save.id" ng-if="!vm.settings.selectedCategory || save.category === vm.settings.selectedCategory" ng-click="vm.selectSave(save.id, $event)" class="noright" md-colors="{background: save.selected ? 'blue' : 'grey-700' }">
             <!--<img alt="{{ save.name }}" ng-src="{{ person.img }}" class="md-avatar" />-->
+            <span ng-if="!!save.screenshot" class="screenshot-thumbnail">
+              <img 
+                ng-click="vm.viewScreenshot(save.screenshot.path)" 
+                width="80" 
+                height="{{save.screenshot.height / (save.screenshot.width / 80)}}" 
+                ng-src="{{save.screenshot.path}}" />
+            </span>
             <p>{{ save.name + (save.category && !vm.settings.selectedCategory ? (" (" + save.category + ")") : "") }}</p>
             <!--<md-checkbox class="md-secondary" ng-model="person.selected"></md-checkbox>-->
             <md-icon ng-if="save.type === 'auto'" md-svg-src="content/save.svg" ng-click="vm.makeAutosavePermanent(save.id, $event)" aria-label="Keep autosave (won't be auto-deleted)y" class="md-secondary md-hue-3">
@@ -115,3 +122,15 @@
     <md-button class="md-raised md-primary" ng-click="vm.createBackup()">Create Backup</md-button>
   </md-content>
 </div>
+
+<!-- <button id="test-button">test button</button>
+<img id="img" src="#" width="1280" height="720"/> -->
+<!-- <video id="video"></video>
+
+<canvas id="canvas">
+  </canvas>
+  <div class="output">
+    <img id="photo" alt="The screen capture will appear in this box.">
+    <img id="img" src="#" width="1280" height="720"/>
+  </div>
+   -->

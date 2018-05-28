@@ -10,14 +10,21 @@
             return currentId++;
         }
 
-        function Save(fileName, filePath, category, type) {
+        function Save(fileName, filePath, category, type, screenshot) {
             this.id = svc.newId();
             this.path = filePath;
             this.name = fileName;
             this.category = category;
             this.type = type;
+            this.screenshot = screenshot;
             this.time = new Date();
         };
+
+        function Screenshot(path, width, height) {
+            this.path = path;
+            this.width = width;
+            this.height = height;
+        }
 
         // ensures all settings are initialized. Will set defaults if missing. 
         // Allows for addition of new settings without breaking settings file
@@ -128,6 +135,7 @@
         var fs = require("fs");
         var path = require('path');
         const { app, globalShortcut, dialog, getCurrentWindow } = require('electron').remote;
+        const { desktopCapturer } = require('electron');
 
         //Encode all data to JSON
         svc.saveToJson = function () {
@@ -143,7 +151,7 @@
         svc.saveSettings = function () {
             try {
                 fs.writeFileSync("settings.json", svc.saveToJson(), 'utf8');
-            } catch(ex) {
+            } catch (ex) {
                 dialog.showMessageBox(null, {
                     title: 'Cannot Save',
                     message: 'Could not save to current folder. Please either run the program as admin or install it to a folder that does not require admin permissions.'
@@ -251,7 +259,7 @@
         //Returns: path of newly create backup : string
         //Params:
         //  [filePath]: path to file to be backed up. Will pull from saveFileLocation setting if not passed : string
-        svc.createBackup = function (opts) {
+        svc.createBackup = async function (opts) {
             // initialize opts if not passed in to allow checking of props without errors
             opts = opts || {};
             var currentDate = new Date();
@@ -265,10 +273,12 @@
 
             filePath = opts.filePath || svc.data.settings.saveFileLocation;
             fs.copyFileSync(filePath, backupFileName);
-            var fileName = saveName;
+            // var fileName = saveName;
             var type = 'manual';
             if (opts && opts.type) type = opts.type;
-            var save = new Save(fileName, backupFileName, svc.data.settings.selectedCategory, type);
+            var screenshotPath = svc.data.settings.saveDirectory + fileName + '.png'
+            var screenshot = await svc.captureScreenshot(screenshotPath);
+            var save = new Save(saveName, backupFileName, svc.data.settings.selectedCategory, type, screenshot);
             svc.data.saves.push(save);
 
             // Remove oldest autosaves that are higher then the max autosave count
@@ -512,6 +522,200 @@
                     //cancel
                 });
             });
+
+            var writeCanvasToFile = function (canvas, saveLocation) {
+                var dataUrl = canvas.toDataURL();
+                var data = dataUrl.replace(/^data:image\/\w+;base64,/, "");
+                var buffer = new Buffer(data, 'base64');
+                fs.writeFileSync(saveLocation, buffer, 'binary');
+                // document.getElementById('img').setAttribute('src', dataUrl);
+            };
+
+            var initializeCapture = async function () {
+                return new Promise((resolve, reject) => {
+                    desktopCapturer.getSources({ types: ['window'] }, async (error, sources) => {
+                        var relevantSources = sources.filter(x => ['DARK SOULS™: REMASTERED'].indexOf(x.name) !== -1);
+
+                        var stream = await navigator.mediaDevices.getUserMedia({
+                            audio: false,
+                            video: {
+                                mandatory: {
+                                    chromeMediaSource: 'desktop',
+                                    chromeMediaSourceId: relevantSources[0].id
+                                }
+                            }
+                        });
+
+                        var track = stream.getVideoTracks()[0];
+                        let imageCapture = new ImageCapture(track);
+
+                        resolve(imageCapture);
+                    });
+                });
+            };
+
+            var imageCapture;
+            (async function () {
+                imageCapture = await initializeCapture();
+            }());
+            
+            svc.captureScreenshot = async function (saveLocation) {
+                let bitmap = await imageCapture.grabFrame();
+
+                const canvas = document.createElement('canvas');
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                canvas.getContext('2d').drawImage(bitmap, 0, 0);
+                writeCanvasToFile(canvas, saveLocation);
+                imageCapture = await initializeCapture();
+                return new Screenshot(saveLocation, bitmap.width, bitmap.height);
+            };
+
+            svc.viewScreenshot = function (path) {
+                var htmlContent = `<img class="screenshot-full-img" src="${path}" />`;
+                
+                var confirm = $mdDialog.alert()
+                    // .title('Remove Missing Backups')
+                    .htmlContent(htmlContent)
+                    .ariaLabel('Remove Missing Backups')
+                    .ok('Close')
+                    // .cancel('Close');
+
+                $mdDialog.show(confirm).then(function () {
+                    // svc.deleteSaves(missingSaves, true);
+                }, function () {
+                    //cancel
+                });
+            };
+
+            // document.getElementById('test-button').addEventListener('click', async () => {
+            //     // imageCapture = await initializeCapture();
+            //     // window.setTimeout(function() {
+            //         captureScreenshot();
+            //     // }, 100);
+            // });
+
+
+            // (async function () {
+            // var media = await navigator.mediaDevices.getUserMedia({video: true});
+            // console.log(media);
+            // desktopCapturer.getSources({ types: ['window'], thumbnailSize: { width: 500, height: 500 } }, (error, sources) => {
+            //     var relevantSources = sources.filter(x => ['DARK SOULS™: REMASTERED'].indexOf(x.name) !== -1);
+            //     console.log(relevantSources);
+            //     var buffer = relevantSources[0].thumbnail.toPNG();
+            //     // var bytes = [];
+            //     // for (var i = 0; i < )
+            //     fs.writeFileSync('./testfile.png', buffer, 'binary');
+
+            //     navigator.mediaDevices.getUserMedia({
+            //         audio: false,
+            //         video: {
+            //             mandatory: {
+            //                 chromeMediaSource: 'desktop',
+            //                 chromeMediaSourceId: relevantSources[0].id,
+            //                 minWidth: 1280,
+            //                 maxWidth: 1280,
+            //                 minHeight: 720,
+            //                 maxHeight: 720
+            //             }
+            //         }
+            //     })
+            //         .then(function (stream) {
+
+            //             var track = stream.getVideoTracks()[0];
+
+            //             // const capabilities = track.getCapabilities()
+            //             // track.applyConstraints({advanced: [{zoom: 1}]})
+
+            //             // track.applyConstraints();
+            //             let imageCapture = new ImageCapture(track);
+
+            //             window.setTimeout(function () {
+            //                 imageCapture.grabFrame()
+            //                     .then((bitmap) => {
+            //                         const canvas = document.querySelector('#canvas');
+            //                         canvas.width = bitmap.width;
+            //                         canvas.height = bitmap.height;
+            //                         let context = canvas.getContext('2d');
+            //                         context.drawImage(bitmap, 0, 0);//, bitmap.width, bitmap.height)
+            //                         var dataUrl = canvas.toDataURL();
+            //                         var data = dataUrl.replace(/^data:image\/\w+;base64,/, "");
+            //                         var buffer = new Buffer(data, 'base64');
+            //                         fs.writeFileSync('testing.png', buffer, 'binary');
+            //                         document.getElementById('img').setAttribute('src', dataUrl);
+            //                     })
+            //             }, 1000);
+
+            // var width = 320;    // We will scale the photo width to this
+            // var height = 0;
+
+            // var streaming = false;
+
+            // var video = null;
+            // video = document.getElementById('video');
+            // canvas = document.getElementById('canvas');
+            // video.srcObject = stream
+            // video.onloadedmetadata = (e) => {
+            //     video.play();
+            // }
+            // photo = document.getElementById('photo');
+            // startbutton = document.getElementById('startbutton');
+
+            // document.getElementById('test-button').addEventListener('click', function () {
+            //     var context = canvas.getContext('2d');
+            //     context.drawImage(video, 0, 0, video.width, video.height);
+            //     var dataURL = canvas.toDataURL();
+            //     window.open(dataURL);
+            //     //create img
+            //     var img = document.getElementById('img');
+            //     img.setAttribute('src', dataURL);
+            // });
+
+
+
+
+
+            // .then(blob => createImageBitmap(blob))
+            // .then(imageBitmap => {
+            //     const canvas = document.querySelector('#canvas');
+            //     drawCanvas(canvas, imageBitmap);
+            //   })
+            // .then(function (data) {
+            // fs.writeFileSync('test.png', data, 'binary');
+            // });
+
+
+            //append img in container div
+            // document.getElementById('thumbnailContainer').appendChild(img);
+
+            // window.setTimeout(() => {
+            //     const canvas = document.createElement('canvas');
+            //     document.querySelector('body').appendChild(canvas);
+
+            //     // set canvas dimensions to video ones to not truncate picture
+            //     const videoElement = document.querySelector('#video');
+            //     canvas.width = videoElement.width;
+            //     canvas.height = videoElement.height;
+
+            //     // copy full video frame into the canvas
+            //     canvas.getContext('2d').drawImage(videoElement, 0, 0, videoElement.width, videoElement.height);
+
+            //     // get image data URL and remove canvas
+            //     const snapshot = canvas.toDataURL("image/png");
+            //     canvas.parentNode.removeChild(canvas);
+
+            //     // update grid picture source
+            //     document.querySelector('#grid').setAttribute('src', snapshot);
+            // }, 0);
+
+
+
+
+            //     console.log(stream);
+
+            // });
+            // });
+            // }());
         }
     };
 

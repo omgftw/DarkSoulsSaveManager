@@ -145,6 +145,10 @@
             }, function () { });
         };
 
+        vm.viewScreenshot = function (path) {
+            core.viewScreenshot(path);
+        }
+
         core.registerShortcuts();
         core.checkSaves();
         core.updateNotificationVolume();

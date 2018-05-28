@@ -1,0 +1,15 @@
+.screenshot-thumbnail {
+  margin-right: 10px; 
+  margin-top: 10px;
+  z-index: 1;
+}
+
+.screenshot-full-img {
+  max-width: 100%;
+}
+
+.screenshot-thumbnail > img{
+  cursor: -moz-zoom-in; 
+  cursor: -webkit-zoom-in; 
+  cursor: zoom-in;
+}
