@@ -1,6 +1,6 @@
 [Setup]
 AppName=Dark Souls Save Manager
-AppVersion=1.0.4
+AppVersion=1.0.5
 DefaultDirName={localappdata}\DarkSoulsSaveManager
 DefaultGroupName=Dark Souls Save Manager
 UninstallDisplayIcon={app}\DarkSoulsSaveManager.exe

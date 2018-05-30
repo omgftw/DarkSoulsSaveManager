@@ -149,6 +149,11 @@
             core.viewScreenshot(path);
         }
 
+        vm.getFullPath = function(path) {
+            return core.getFullPath(path);
+        };
+        // vm.appRoot = __dirname;
+
         core.registerShortcuts();
         core.checkSaves();
         core.updateNotificationVolume();

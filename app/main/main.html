@@ -78,7 +78,7 @@
                 ng-click="vm.viewScreenshot(save.screenshot.path)" 
                 width="80" 
                 height="{{save.screenshot.height / (save.screenshot.width / 80)}}" 
-                ng-src="{{save.screenshot.path}}" />
+                ng-src="{{vm.getFullPath(save.screenshot.path)}}" />
             </span>
             <p>{{ save.name + (save.category && !vm.settings.selectedCategory ? (" (" + save.category + ")") : "") }}</p>
             <!--<md-checkbox class="md-secondary" ng-model="person.selected"></md-checkbox>-->

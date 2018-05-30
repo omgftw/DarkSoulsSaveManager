@@ -572,7 +572,7 @@
             };
 
             svc.viewScreenshot = function (path) {
-                var htmlContent = `<img class="screenshot-full-img" src="${path}" />`;
+                var htmlContent = `<img class="screenshot-full-img" src="${svc.getFullPath(path)}" />`;
                 
                 var confirm = $mdDialog.alert()
                     // .title('Remove Missing Backups')
@@ -586,6 +586,11 @@
                 }, function () {
                     //cancel
                 });
+            };
+
+            var rootDir = process.cwd();
+            svc.getFullPath = function(inputPath) {
+                return path.join(rootDir, inputPath);
             };
 
             // document.getElementById('test-button').addEventListener('click', async () => {
