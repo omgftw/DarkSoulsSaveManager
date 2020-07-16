@@ -24,7 +24,7 @@
     "angular-messages": "^1.6.1",
     "angular-route": "^1.6.1",
     "angular-sanitize": "1.6.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "asar": "^0.13.0",
