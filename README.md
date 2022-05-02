@@ -2,11 +2,11 @@
 
 Can be used with any game that uses only a single save file.  
 
-Confirmed working for:
-Dark Souls
-Dark Souls 2
-Dark Souls 3
-Elden Ring
+Confirmed working for:  
+Dark Souls  
+Dark Souls 2  
+Dark Souls 3  
+Elden Ring  
 
 ## To use:  
 Download: https://github.com/omgftw/DarkSoulsSaveManager/releases  
